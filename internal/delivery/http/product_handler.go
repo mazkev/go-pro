@@ -111,3 +111,18 @@ func (h *ProductHandler) Delete(c *gin.Context) {
 		"message": "Produk berhasil dihapus!",
 	})
 }
+// 6. GET /products/search?keyword=...
+func (h *ProductHandler) Search(c *gin.Context) {
+	// Ambil kata kunci dari URL Query Parameter (?keyword=...)
+	keyword := c.Query("keyword")
+
+	// Panggil usecase
+	products, err := h.usecase.Search(keyword)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Kembalikan hasil pencarian ke user
+	c.JSON(http.StatusOK, products)
+}

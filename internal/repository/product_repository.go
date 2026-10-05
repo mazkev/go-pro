@@ -56,3 +56,10 @@ func (r *productRepository) Delete(id int) error {
 	}
 	return nil
 }
+// 6. Pencarian: SELECT * FROM products WHERE name LIKE '%keyword%'
+func (r *productRepository) Search(keyword string) ([]domain.Product, error) {
+	var products []domain.Product
+	// Menggunakan parameter '?' untuk keamanan (Mencegah serangan hacker SQL Injection)
+	err := r.db.Where("name LIKE ?", "%"+keyword+"%").Find(&products).Error
+	return products, err
+}

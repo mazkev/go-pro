@@ -5,6 +5,7 @@ RESTful API sederhana untuk manajemen produk e-commerce menggunakan bahasa pemro
 ## 🚀 Fitur Saat Ini
 - **GET /products**: Mengambil semua daftar produk.
 - **GET /products/:id**: Mengambil detail satu produk berdasarkan ID.
+- **GET /products/search?keyword=...**: Mencari produk berdasarkan kata kunci nama (SQL LIKE).
 - **POST /products**: Menambahkan produk baru ke database.
 - **PUT /products/:id**: Memperbarui nama, harga, atau stok produk.
 - **DELETE /products/:id**: Menghapus produk dari database.

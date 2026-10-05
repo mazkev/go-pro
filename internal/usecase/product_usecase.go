@@ -88,3 +88,13 @@ func (u *productUsecase) Update(id int, input *domain.Product) (*domain.Product,
 func (u *productUsecase) Delete(id int) error {
 	return u.repo.Delete(id)
 }
+// 6. Logika Pencarian Produk
+func (u *productUsecase) Search(keyword string) ([]domain.Product, error) {
+	// ATURAN BISNIS: Kata kunci tidak boleh kosong
+	if keyword == "" {
+		return nil, errors.New("kata kunci pencarian tidak boleh kosong")
+	}
+
+	// Panggil repository untuk query ke database
+	return u.repo.Search(keyword)
+}

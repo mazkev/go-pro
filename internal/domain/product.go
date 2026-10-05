@@ -14,6 +14,7 @@ type Product struct {
 type ProductRepository interface {
 	FindAll() ([]Product, error)
 	FindByID(id int) (*Product, error)
+	Search(keyword string) ([]Product, error)
 	Create(product *Product) error
 	Update(product *Product) error
 	Delete(id int) error
@@ -24,6 +25,7 @@ type ProductRepository interface {
 type ProductUsecase interface {
 	GetAll() ([]Product, error)
 	GetByID(id int) (*Product, error)
+	Search(keyword string) ([]Product, error)
 	Create(product *Product) error
 	Update(id int, product *Product) (*Product, error)
 	Delete(id int) error

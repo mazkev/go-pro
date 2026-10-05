@@ -40,6 +40,7 @@ func main() {
 
 	// 6. Daftarkan Rute
 	r.GET("/products", productHandler.GetAll)
+	r.GET("/products/search", productHandler.Search)
 	r.GET("/products/:id", productHandler.GetByID)
 	r.POST("/products", productHandler.Create)
 	r.PUT("/products/:id", productHandler.Update)
