@@ -43,14 +43,17 @@ func (h *UserHandler) Login(c *gin.Context) {
 		return
 	}
 
-	user, err := h.usecase.Login(&req)
+	authRes, err := h.usecase.Login(&req)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
+	// Kirim Token JWT ke client!
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Login berhasil!",
-		"data":    user,
+		"token":   authRes.Token,
+		"user":    authRes.User,
 	})
 }
+

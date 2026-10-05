@@ -35,5 +35,11 @@ type UserRepository interface {
 // 4. Kontrak Usecase (Logika Bisnis & Keamanan)
 type UserUsecase interface {
 	Register(req *RegisterRequest) (*User, error)
-	Login(req *LoginRequest) (*User, error)
+	Login(req *LoginRequest) (*AuthResponse, error)
+}
+
+// Respon saat login berhasil (membawa Tiket Token & Data User)
+type AuthResponse struct {
+	Token string `json:"token"`
+	User  *User  `json:"user"`
 }

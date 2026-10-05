@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"ecommerce-api/internal/domain"
+	"ecommerce-api/internal/utils"
 	"errors"
 
 	"golang.org/x/crypto/bcrypt"
@@ -54,21 +55,30 @@ func (u *userUsecase) Register(req *domain.RegisterRequest) (*domain.User, error
 	return newUser, nil
 }
 
-// 2. Logika Login
-func (u *userUsecase) Login(req *domain.LoginRequest) (*domain.User, error) {
-	// 1. Cari user berdasarkan email
-	user, err := u.repo.FindByEmail(req.Email)
-	if err != nil {
-		// Pesan sengaja dibuat samar demi keamanan (agar hacker tidak bisa menebak email mana yang valid)
-		return nil, errors.New("email atau password salah")
-	}
+// 2. Logika Login (Menghasilkan Token JWT!)
+func (u *userUsecase) Login(req *domain.LoginRequest) (*domain.AuthResponse, error) {
+    // 1. Cari user berdasarkan email
+    user, err := u.repo.FindByEmail(req.Email)
+    if err != nil {
+        return nil, errors.New("email atau password salah")
+    }
 
-	// 2. Cocokkan password yang diketik dengan HASH di database menggunakan Bcrypt!
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
-	if err != nil {
-		return nil, errors.New("email atau password salah")
-	}
+    // 2. Cocokkan password dengan Bcrypt
+    err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
+    if err != nil {
+        return nil, errors.New("email atau password salah")
+    }
 
-	// Login berhasil! Kembalikan data user
-	return user, nil
+    // 3. CETAK TIKET JWT!
+    token, err := utils.GenerateToken(user.ID, user.Email, user.Role)
+    if err != nil {
+        return nil, errors.New("gagal membuat token autentikasi")
+    }
+
+    // 4. Kembalikan token dan data user
+    return &domain.AuthResponse{
+        Token: token,
+        User:  user,
+    }, nil
 }
+
