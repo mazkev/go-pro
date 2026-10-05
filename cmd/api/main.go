@@ -2,6 +2,7 @@ package main
 
 import (
 	httpDelivery "ecommerce-api/internal/delivery/http"
+	"ecommerce-api/internal/delivery/http/middleware"
 	"ecommerce-api/internal/domain"
 	"ecommerce-api/internal/repository"
 	"ecommerce-api/internal/usecase"
@@ -45,13 +46,22 @@ func main() {
 	r.GET("/products", productHandler.GetAll)
 	r.GET("/products/search", productHandler.Search)
 	r.GET("/products/:id", productHandler.GetByID)
-	r.POST("/products", productHandler.Create)
-	r.PUT("/products/:id", productHandler.Update)
-	r.DELETE("/products/:id", productHandler.Delete)
 
 	// Rute untuk User
 	r.POST("/register", userHandler.Register)
 	r.POST("/login", userHandler.Login)
+
+	// -------------------------------------------------------------
+	// 2. RUTE TERKUNCI (Wajib punya tiket JWT sah!)
+	// -------------------------------------------------------------
+	protected := r.Group("/")
+	protected.Use(middleware.AuthMiddleware()) // <--- SATPAM DIPASANG DI SINI!
+
+	{
+		protected.POST("/products", productHandler.Create)
+		protected.PUT("/products/:id", productHandler.Update)
+		protected.DELETE("/products/:id", productHandler.Delete)
+	}
 
 	// 7. Jalankan Server di port 8080
 	r.Run(":8080")

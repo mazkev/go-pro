@@ -4,21 +4,23 @@ RESTful API sederhana untuk manajemen produk e-commerce menggunakan bahasa pemro
 
 ## 🚀 Fitur Saat Ini
 ### Manajemen Produk
-- **GET /products**: Mengambil semua daftar produk.
-- **GET /products/:id**: Mengambil detail satu produk berdasarkan ID.
-- **GET /products/search?keyword=...**: Mencari produk berdasarkan kata kunci nama (SQL LIKE).
-- **POST /products**: Menambahkan produk baru ke database.
-- **PUT /products/:id**: Memperbarui nama, harga, atau stok produk.
-- **DELETE /products/:id**: Menghapus produk dari database.
+- **GET /products**: Mengambil semua daftar produk (Publik).
+- **GET /products/:id**: Mengambil detail satu produk berdasarkan ID (Publik).
+- **GET /products/search?keyword=...**: Mencari produk berdasarkan kata kunci nama (Publik).
+- **POST /products**: Menambahkan produk baru (🔒 Terproteksi JWT).
+- **PUT /products/:id**: Memperbarui nama, harga, atau stok produk (🔒 Terproteksi JWT).
+- **DELETE /products/:id**: Menghapus produk dari database (🔒 Terproteksi JWT).
 
 ### Manajemen User & Autentikasi
 - **POST /register**: Registrasi user baru dengan password hashing (Bcrypt).
-- **POST /login**: Login user dengan verifikasi password hash.
+- **POST /login**: Login user dengan verifikasi password hash dan penerbitan token JWT.
 
 ## 🛠️ Tech Stack
 - **Language**: Go (Golang) v1.26+
 - **Web Framework**: [Gin Gonic](https://github.com/gin-gonic/gin)
-- **Security**: [golang.org/x/crypto/bcrypt](https://pkg.go.dev/golang.org/x/crypto/bcrypt) (Password Hashing)
+- **Security & Auth**: 
+  - [golang.org/x/crypto/bcrypt](https://pkg.go.dev/golang.org/x/crypto/bcrypt) (Password Hashing)
+  - [golang-jwt/jwt/v5](https://github.com/golang-jwt/jwt) (JSON Web Token & Auth Middleware)
 - **ORM**: [GORM](https://gorm.io)
 - **Database**: SQLite (Pure Go via [glebarez/sqlite](https://github.com/glebarez/sqlite))
 - **Testing**: REST Client (`rest.http`)
@@ -31,6 +33,8 @@ RESTful API sederhana untuk manajemen produk e-commerce menggunakan bahasa pemro
 ├── internal/
 │   ├── delivery/
 │   │   └── http/
+│   │       ├── middleware/
+│   │       │   └── auth_middleware.go # Satpam Pemeriksa Token JWT
 │   │       ├── product_handler.go  # Controller/Handler HTTP Produk
 │   │       └── user_handler.go     # Controller/Handler HTTP User & Auth
 │   ├── domain/
