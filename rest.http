@@ -14,13 +14,15 @@ Content-Type: application/json
 
 {
   "name": "Ultra HD",
-  "price": 400000
+  "price": 400000, 
+  "stock": 20,
+  "category": "Elektronik"
 }
 
 ###
 
 ### 5. Update Produk (PUT)
-PUT http://localhost:8080/products/1
+PUT http://localhost:8080/products/2
 Content-Type: application/json
 
 {
@@ -37,3 +39,55 @@ DELETE http://localhost:8080/products/1
 
 ### 5. Tes Error: ID Tidak Ditemukan
 GET http://localhost:8080/products/999
+
+### 6. Cari Produk Berdasarkan Kata Kunci (Search)
+GET http://localhost:8080/products/search?keyword=Ultra
+
+###
+
+### 7. Tes Error: Kata Kunci Kosong
+GET http://localhost:8080/products/search?keyword=
+
+### 8. Registrasi User Baru
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{
+  "name": "Kevin Pratama",
+  "email": "kevin@example.com",
+  "password": "rahasia123"
+}
+
+###
+
+### 9. Tes Error: Registrasi dengan Email Sama (Duplikat)
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{
+  "name": "Kevin Kloning",
+  "email": "kevin@example.com",
+  "password": "rahasia123"
+}
+
+###
+
+### 10. Login: Password Benar
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "email": "kevin@example.com",
+  "password": "rahasia123"
+}
+
+###
+
+### 11. Login: Password Salah
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "email": "kevin@example.com",
+  "password": "passwordngawur"
+}

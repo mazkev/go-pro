@@ -21,7 +21,7 @@ func NewProductRepository(db *gorm.DB) domain.ProductRepository {
 // 1. SELECT * FROM products
 func (r *productRepository) FindAll() ([]domain.Product, error) {
 	var products []domain.Product
-	err := r.db.Find(&products).Error
+	err := r.db.Debug().Find(&products).Error
 	return products, err
 }
 

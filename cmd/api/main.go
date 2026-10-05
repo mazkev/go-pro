@@ -18,7 +18,7 @@ func initDB() *gorm.DB {
 	}
 
 	// Migrasi tabel menggunakan struct dari domain
-	db.AutoMigrate(&domain.Product{})
+	db.AutoMigrate(&domain.Product{},&domain.User{})
 	return db
 }
 
@@ -34,6 +34,9 @@ func main() {
 
 	// 4. Delivery/Handler Layer (Pegang Usecase)
 	productHandler := httpDelivery.NewProductHandler(productUsecase)
+	userRepo := repository.NewUserRepository(db)
+	userUsecase := usecase.NewUserUsecase(userRepo)
+	userHandler := httpDelivery.NewUserHandler(userUsecase)
 
 	// 5. Setup Router Gin
 	r := gin.Default()
@@ -45,6 +48,10 @@ func main() {
 	r.POST("/products", productHandler.Create)
 	r.PUT("/products/:id", productHandler.Update)
 	r.DELETE("/products/:id", productHandler.Delete)
+
+	// Rute untuk User
+	r.POST("/register", userHandler.Register)
+	r.POST("/login", userHandler.Login)
 
 	// 7. Jalankan Server di port 8080
 	r.Run(":8080")
