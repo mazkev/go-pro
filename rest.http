@@ -1,0 +1,39 @@
+### 1. Ambil Semua Produk
+GET http://localhost:8080/products
+
+###
+
+### 2. Ambil Produk Berdasarkan ID (ID = 1)
+GET http://localhost:8080/products/1
+
+###
+
+### 3. Tambah Produk Baru
+POST http://localhost:8080/products
+Content-Type: application/json
+
+{
+  "name": "Ultra HD",
+  "price": 400000
+}
+
+###
+
+### 5. Update Produk (PUT)
+PUT http://localhost:8080/products/1
+Content-Type: application/json
+
+{
+  "name": "Webcam Ultra 4K",
+  "price": 750000,
+  "stock": 15
+}
+
+
+### 4. Hapus Produk Berdasarkan ID (Hapus ID = 2)
+DELETE http://localhost:8080/products/1
+
+###
+
+### 5. Tes Error: ID Tidak Ditemukan
+GET http://localhost:8080/products/999
