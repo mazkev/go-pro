@@ -16,22 +16,26 @@ RESTful API sederhana untuk manajemen produk e-commerce menggunakan bahasa pemro
 - **Database**: SQLite (Pure Go via [glebarez/sqlite](https://github.com/glebarez/sqlite))
 - **Testing**: REST Client (`rest.http`)
 
-## 📁 Struktur Direktori
+## 📁 Struktur Direktori (Clean Architecture)
 ```
 ├── cmd/
 │   └── api/
-│       └── main.go           # Entry point aplikasi & registrasi router
+│       └── main.go                 # Entry point aplikasi & Dependency Injection (Wiring)
 ├── internal/
 │   ├── delivery/
 │   │   └── http/
-│   │       └── product_handle.go # Controller/Handler HTTP untuk Produk
-│   └── domain/
-│       └── product.go        # Model struct Produk
+│   │       └── product_handler.go  # Controller/Handler HTTP (Transport Layer)
+│   ├── domain/
+│   │   └── product.go              # Model struct & Interface Contracts
+│   ├── repository/
+│   │   └── product_repository.go   # Data Access Layer (GORM / Database)
+│   └── usecase/
+│       └── product_usecase.go      # Business Logic & Validation Layer
 ├── .gitignore
 ├── go.mod
 ├── go.sum
 ├── README.md
-└── rest.http                 # File pengujian endpoint API
+└── rest.http                       # File pengujian endpoint API
 ```
 
 ## 🏃 Cara Menjalankan

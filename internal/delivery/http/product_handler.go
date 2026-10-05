@@ -6,23 +6,25 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-// ProductHandler menampung koneksi database agar bisa dipakai semua fungsi di bawah
+// ProductHandler sekarang HANYA memegang Usecase (tidak kenal database GORM sama sekali)
 type ProductHandler struct {
-	db *gorm.DB
+	usecase domain.ProductUsecase
 }
 
-// Fungsi pembantu untuk membuat ProductHandler baru
-func NewProductHandler(db *gorm.DB) *ProductHandler {
-	return &ProductHandler{db: db}
+// Inisialisasi Handler baru dengan menyuntikkan Usecase
+func NewProductHandler(usecase domain.ProductUsecase) *ProductHandler {
+	return &ProductHandler{usecase: usecase}
 }
 
 // 1. GET /products
 func (h *ProductHandler) GetAll(c *gin.Context) {
-	var products []domain.Product
-	h.db.Find(&products)
+	products, err := h.usecase.GetAll()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 	c.JSON(http.StatusOK, products)
 }
 
@@ -31,13 +33,13 @@ func (h *ProductHandler) GetByID(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "ID harus angka"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID harus berupa angka"})
 		return
 	}
 
-	var product domain.Product
-	if err := h.db.First(&product, id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Produk tidak ditemukan"})
+	product, err := h.usecase.GetByID(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -52,9 +54,14 @@ func (h *ProductHandler) Create(c *gin.Context) {
 		return
 	}
 
-	h.db.Create(&newProduct)
+	// Serahkan validasi dan penyimpanan ke Usecase!
+	if err := h.usecase.Create(&newProduct); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "Produk berhasil disimpan ke database!",
+		"message": "Produk berhasil dibuat!",
 		"data":    newProduct,
 	})
 }
@@ -64,13 +71,7 @@ func (h *ProductHandler) Update(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "ID harus angka"})
-		return
-	}
-
-	var product domain.Product
-	if err := h.db.First(&product, id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Produk tidak ditemukan"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID harus berupa angka"})
 		return
 	}
 
@@ -80,15 +81,15 @@ func (h *ProductHandler) Update(c *gin.Context) {
 		return
 	}
 
-	h.db.Model(&product).Updates(domain.Product{
-		Name:  input.Name,
-		Price: input.Price,
-		Stock: input.Stock,
-	})
+	updatedProduct, err := h.usecase.Update(id, &input)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Produk berhasil diperbarui!",
-		"data":    product,
+		"data":    updatedProduct,
 	})
 }
 
@@ -97,17 +98,16 @@ func (h *ProductHandler) Delete(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "ID harus angka"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID harus berupa angka"})
 		return
 	}
 
-	result := h.db.Delete(&domain.Product{}, id)
-	if result.RowsAffected == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Produk tidak ditemukan untuk dihapus"})
+	if err := h.usecase.Delete(id); err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Produk berhasil dihapus dari database!",
+		"message": "Produk berhasil dihapus!",
 	})
 }
