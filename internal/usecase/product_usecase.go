@@ -72,6 +72,9 @@ func (u *productUsecase) Update(id int, input *domain.Product) (*domain.Product,
 	if input.Stock >= 0 {
 		existingProduct.Stock = input.Stock
 	}
+	if input.Category != "" {
+		existingProduct.Category = input.Category
+	}
 
 	// Suruh repository simpan perubahan
 	if err := u.repo.Update(existingProduct); err != nil {
