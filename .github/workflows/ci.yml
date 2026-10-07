@@ -1,0 +1,32 @@
+name: Go Backend CI Pipeline
+
+# Jalankan otomatis setiap ada push ke branch main atau pull request
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Download kode dari GitHub
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. Setup Golang di server GitHub
+      - name: Setup Golang
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+          cache: true
+
+      # 3. Jalankan Pengujian Otomatis (Unit Test)
+      - name: Run Unit Tests
+        run: go test -v ./...
+
+      # 4. Cek apakah kompilasi binary berhasil
+      - name: Build Binary
+        run: go build -v ./cmd/api
