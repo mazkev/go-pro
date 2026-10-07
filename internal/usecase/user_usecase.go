@@ -4,6 +4,8 @@ import (
 	"ecommerce-api/internal/domain"
 	"ecommerce-api/internal/utils"
 	"errors"
+	"fmt"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -43,8 +45,8 @@ func (u *userUsecase) Register(req *domain.RegisterRequest) (*domain.User, error
 	newUser := &domain.User{
 		Name:     req.Name,
 		Email:    req.Email,
-		Password: string(hashedPassword), // Yang disimpan adalah KODE HASH-nya!
-		Role:     "customer",            // Default role pengguna biasa
+		Password: string(hashedPassword),
+		Role:     "customer",
 	}
 
 	// Simpan ke database via repository
@@ -52,33 +54,43 @@ func (u *userUsecase) Register(req *domain.RegisterRequest) (*domain.User, error
 		return nil, err
 	}
 
+	// 🚀 TERAPKAN CONCURRENCY (FASE 4):
+	// Kirim email di background lewat Goroutine agar tidak membebani kecepatan response HTTP!
+	go kirimEmailSelamatDatang(newUser.Email, newUser.Name)
+
 	return newUser, nil
 }
 
 // 2. Logika Login (Menghasilkan Token JWT!)
 func (u *userUsecase) Login(req *domain.LoginRequest) (*domain.AuthResponse, error) {
-    // 1. Cari user berdasarkan email
-    user, err := u.repo.FindByEmail(req.Email)
-    if err != nil {
-        return nil, errors.New("email atau password salah")
-    }
+	// 1. Cari user berdasarkan email
+	user, err := u.repo.FindByEmail(req.Email)
+	if err != nil {
+		return nil, errors.New("email atau password salah")
+	}
 
-    // 2. Cocokkan password dengan Bcrypt
-    err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
-    if err != nil {
-        return nil, errors.New("email atau password salah")
-    }
+	// 2. Cocokkan password dengan Bcrypt
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
+	if err != nil {
+		return nil, errors.New("email atau password salah")
+	}
 
-    // 3. CETAK TIKET JWT!
-    token, err := utils.GenerateToken(user.ID, user.Email, user.Role)
-    if err != nil {
-        return nil, errors.New("gagal membuat token autentikasi")
-    }
+	// 3. CETAK TIKET JWT!
+	token, err := utils.GenerateToken(user.ID, user.Email, user.Role)
+	if err != nil {
+		return nil, errors.New("gagal membuat token autentikasi")
+	}
 
-    // 4. Kembalikan token dan data user
-    return &domain.AuthResponse{
-        Token: token,
-        User:  user,
-    }, nil
+	// 4. Kembalikan token dan data user
+	return &domain.AuthResponse{
+		Token: token,
+		User:  user,
+	}, nil
 }
 
+// Fungsi simulasi pengiriman email asinkron
+func kirimEmailSelamatDatang(email, nama string) {
+	fmt.Printf("⏳ [Goroutine Background] Mulai memproses email selamat datang untuk %s (%s)...\n", nama, email)
+	time.Sleep(2 * time.Second) // Simulasi loading jaringan server SMTP 2 detik
+	fmt.Printf("📧 [Goroutine Background] ✅ Email selamat datang BERHASIL terkirim ke %s!\n", email)
+}
