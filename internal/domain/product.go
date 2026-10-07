@@ -1,5 +1,7 @@
 package domain
 
+import "gorm.io/gorm"
+
 // 1. Model Data Produk
 type Product struct {
 	ID    int    `json:"id" gorm:"primaryKey"`
@@ -7,6 +9,7 @@ type Product struct {
 	Price int    `json:"price"`
 	Stock int    `json:"stock"`
 	Category string `json:"category"`
+	DeletedAt gorm.DeletedAt `json:"-" gorm:"index"`
 }
 
 // 2. Kontrak untuk Repository (Database)
