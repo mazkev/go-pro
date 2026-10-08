@@ -36,6 +36,7 @@ type UserRepository interface {
 type UserUsecase interface {
 	Register(req *RegisterRequest) (*User, error)
 	Login(req *LoginRequest) (*AuthResponse, error)
+	GetProfile(userID int) (*User, error) //
 }
 
 // Respon saat login berhasil (membawa Tiket Token & Data User)

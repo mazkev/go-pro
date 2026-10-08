@@ -70,7 +70,8 @@ func main() {
 	// 7. Rute Terkunci (Wajib Token JWT)
 	protected := r.Group("/")
 	protected.Use(middleware.AuthMiddleware())
-	{
+	{	
+		protected.GET("/me", userHandler.GetMe)
 		// Produk
 		protected.POST("/products", productHandler.Create)
 		protected.PUT("/products/:id", productHandler.Update)
@@ -87,6 +88,7 @@ func main() {
 		protected.PUT("/cards/:id", cardHandler.Update)
 		protected.PUT("/cards/:id/move", cardHandler.Move)
 		protected.DELETE("/cards/:id", cardHandler.Delete)
+		protected.GET("/users/me", userHandler.GetMe)
 	}
 	
 

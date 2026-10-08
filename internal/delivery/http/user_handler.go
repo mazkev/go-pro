@@ -57,3 +57,21 @@ func (h *UserHandler) Login(c *gin.Context) {
 	})
 }
 
+// 3. GET /me (Ambil data user yang sedang login dari token JWT)
+func (h *UserHandler) GetMe(c *gin.Context) {
+	userID := getUserID(c)
+	if userID == 0 {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	user, err := h.usecase.GetProfile(int(userID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": user,
+	})
+}

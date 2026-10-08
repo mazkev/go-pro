@@ -88,6 +88,15 @@ func (u *userUsecase) Login(req *domain.LoginRequest) (*domain.AuthResponse, err
 	}, nil
 }
 
+// 3. Logika Ambil Profil User
+func (u *userUsecase) GetProfile(userID int) (*domain.User, error) {
+	user, err := u.repo.FindByID(userID)
+	if err != nil {
+		return nil, errors.New("user tidak ditemukan")
+	}
+	return user, nil
+}
+
 // Fungsi simulasi pengiriman email asinkron
 func kirimEmailSelamatDatang(email, nama string) {
 	fmt.Printf("⏳ [Goroutine Background] Mulai memproses email selamat datang untuk %s (%s)...\n", nama, email)
