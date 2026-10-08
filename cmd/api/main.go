@@ -18,51 +18,63 @@ func initDB() *gorm.DB {
 		panic("Gagal menghubungkan ke database: " + err.Error())
 	}
 
-	// Migrasi tabel menggunakan struct dari domain
-	db.AutoMigrate(&domain.Product{},&domain.User{})
+	// Migrasi otomatis seluruh tabel relasional
+	db.AutoMigrate(
+		&domain.User{},
+		&domain.Product{},
+		&domain.Board{},
+		&domain.List{},
+		&domain.Card{},
+		&domain.ChecklistItem{},
+	)
 	return db
 }
 
 func main() {
-	// 1. Database Layer (Paling Bawah)
+	// 1. Database Layer
 	db := initDB()
 
-	// 2. Repository Layer (Pegang Database)
+	// 2. Product Modules
 	productRepo := repository.NewProductRepository(db)
-
-	// 3. Usecase Layer (Pegang Repository)
 	productUsecase := usecase.NewProductUsecase(productRepo)
-
-	// 4. Delivery/Handler Layer (Pegang Usecase)
 	productHandler := httpDelivery.NewProductHandler(productUsecase)
+
+	// 3. User Modules
 	userRepo := repository.NewUserRepository(db)
 	userUsecase := usecase.NewUserUsecase(userRepo)
 	userHandler := httpDelivery.NewUserHandler(userUsecase)
 
+	// 4. 📋 Kanban Board Modules (BARU!)
+	boardRepo := repository.NewBoardRepository(db)
+	boardUsecase := usecase.NewBoardUsecase(boardRepo)
+	boardHandler := httpDelivery.NewBoardHandler(boardUsecase)
+
 	// 5. Setup Router Gin
 	r := gin.Default()
 
-	// 6. Daftarkan Rute
+	// 6. Rute Publik
 	r.GET("/products", productHandler.GetAll)
 	r.GET("/products/search", productHandler.Search)
 	r.GET("/products/:id", productHandler.GetByID)
-
-	// Rute untuk User
 	r.POST("/register", userHandler.Register)
 	r.POST("/login", userHandler.Login)
 
-	// -------------------------------------------------------------
-	// 2. RUTE TERKUNCI (Wajib punya tiket JWT sah!)
-	// -------------------------------------------------------------
+	// 7. Rute Terkunci (Wajib Token JWT)
 	protected := r.Group("/")
-	protected.Use(middleware.AuthMiddleware()) // <--- SATPAM DIPASANG DI SINI!
-
+	protected.Use(middleware.AuthMiddleware())
 	{
+		// Produk
 		protected.POST("/products", productHandler.Create)
 		protected.PUT("/products/:id", productHandler.Update)
 		protected.DELETE("/products/:id", productHandler.Delete)
+
+		// 📋 Rute Kanban Board (Milik User)
+		protected.GET("/boards", boardHandler.GetMyBoards)
+		protected.GET("/boards/:id", boardHandler.GetByID)
+		protected.POST("/boards", boardHandler.Create)
+		protected.DELETE("/boards/:id", boardHandler.Delete)
 	}
 
-	// 7. Jalankan Server di port 8080
+	// 8. Jalankan Server di port 8080
 	r.Run(":8080")
 }

@@ -4,7 +4,7 @@ GET http://localhost:8080/products
 ###
 
 ### 2. Ambil Produk Berdasarkan ID (ID = 1)
-GET http://localhost:8080/products/1
+GET http://localhost:8080/products/2
 
 ###
 
@@ -33,7 +33,8 @@ Content-Type: application/json
 
 
 ### 4. Hapus Produk Berdasarkan ID (Hapus ID = 2)
-DELETE http://localhost:8080/products/1
+DELETE http://localhost:8080/products/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNDQ1NzA5LCJpYXQiOjE3OTEzNTkzMDl9.IMnf1R64NPqli4luRtHw6rTSFo0DZNt-wT2t9Sm6Uq4
 
 ###
 
@@ -53,9 +54,9 @@ POST http://localhost:8080/register
 Content-Type: application/json
 
 {
-  "name": "Kevin Pratama",
-  "email": "kevin@example.com",
-  "password": "rahasia123"
+   "name": "Budi Santoso",
+  "email": "budi123@example.com",
+  "password": "password123"
 }
 
 ###
@@ -91,3 +92,56 @@ Content-Type: application/json
   "email": "kevin@example.com",
   "password": "passwordngawur"
 }
+
+###
+
+### 12. Tambah Produk Baru (Dengan Token)
+POST http://localhost:8080/products
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxMjgwMTgwLCJpYXQiOjE3OTExOTM3ODB9._-sQltP05JFHVWL0KRJ3E8KdXTM4d8fZDHe0TLqJiLY
+
+{
+  "name": "Mouse Gaming RGB",
+  "price": 250000,
+  "stock": 10,
+  "category": "Elektronik"
+}
+
+### TES 1: Masuk Halaman Publik (Tanpa Tiket)
+GET http://localhost:8080/publik
+
+###
+
+### TES 2: Coba Masuk Brankas TANPA TIKET (Akan dicegat satpam!)
+GET http://localhost:8080/rahasia/brankas
+
+###
+
+### TES 3: Masuk Brankas DENGAN TIKET RESMI
+GET http://localhost:8080/rahasia/brankas
+X-Tiket-VIP: VIP-123
+### ========================================================
+### 📋 UJI COBA KANBAN BOARD (TRELLO BACKEND)
+### ========================================================
+
+### 10. Buat Board Baru (Otomatis Buat 3 Kolom: To Do, In Progress, Done!)
+POST http://localhost:8080/boards
+Authorization: Bearer <TEMPEL_TOKEN_LOGIN_KAMU_DI_SINI>
+Content-Type: application/json
+
+{
+  "title": "Project Sprint 1",
+  "color": "from-blue-500 to-indigo-500"
+}
+
+###
+
+### 11. Ambil Semua Board Milik Saya
+GET http://localhost:8080/boards
+Authorization: Bearer <TEMPEL_TOKEN_LOGIN_KAMU_DI_SINI>
+
+###
+
+### 12. Ambil Detail Board (Beserta Kolom dan Kartunya)
+GET http://localhost:8080/boards/1
+Authorization: Bearer <TEMPEL_TOKEN_LOGIN_KAMU_DI_SINI>
