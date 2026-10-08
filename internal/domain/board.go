@@ -64,3 +64,20 @@ type BoardUsecase interface {
 	CreateBoard(userID uint, title string, color string) (*Board, error)
 	DeleteBoard(id uint, userID uint) error
 }
+
+// 7. Kontrak Repository Card
+type CardRepository interface {
+	FindByID(id uint) (*Card, error)
+	Create(card *Card) error
+	Update(card *Card) error
+	Delete(id uint) error
+	Move(cardID uint, targetListID uint, newPosition int) error
+}
+
+// 8. Kontrak Usecase Card
+type CardUsecase interface {
+	CreateCard(listID uint, content string, label string, description string) (*Card, error)
+	UpdateCard(id uint, content string, description string, label string, dueDate string, checked bool) (*Card, error)
+	MoveCard(id uint, targetListID uint, newPosition int) error
+	DeleteCard(id uint) error
+}

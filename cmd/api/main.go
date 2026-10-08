@@ -49,6 +49,12 @@ func main() {
 	boardUsecase := usecase.NewBoardUsecase(boardRepo)
 	boardHandler := httpDelivery.NewBoardHandler(boardUsecase)
 
+	
+	// 5. 🗂️ Kanban Card Modules (BARU!)
+	cardRepo := repository.NewCardRepository(db)
+	cardUsecase := usecase.NewCardUsecase(cardRepo)
+	cardHandler := httpDelivery.NewCardHandler(cardUsecase)
+
 	// 5. Setup Router Gin
 	r := gin.Default()
 
@@ -73,7 +79,14 @@ func main() {
 		protected.GET("/boards/:id", boardHandler.GetByID)
 		protected.POST("/boards", boardHandler.Create)
 		protected.DELETE("/boards/:id", boardHandler.Delete)
+
+		// 🗂️ Rute Kartu Tugas & Drag and Drop (BARU!)
+		protected.POST("/lists/:listId/cards", cardHandler.Create)
+		protected.PUT("/cards/:id", cardHandler.Update)
+		protected.PUT("/cards/:id/move", cardHandler.Move)
+		protected.DELETE("/cards/:id", cardHandler.Delete)
 	}
+	
 
 	// 8. Jalankan Server di port 8080
 	r.Run(":8080")
