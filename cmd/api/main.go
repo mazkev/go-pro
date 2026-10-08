@@ -58,6 +58,8 @@ func main() {
 	// 5. Setup Router Gin
 	r := gin.Default()
 
+	r.Use(middleware.CORSMiddleware())
+
 	// 6. Rute Publik
 	r.GET("/products", productHandler.GetAll)
 	r.GET("/products/search", productHandler.Search)
