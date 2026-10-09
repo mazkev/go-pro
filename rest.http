@@ -259,3 +259,16 @@ Content-Type: application/json
 ### 22. Hapus Sub-Tugas (DELETE /checklist/:id)
 DELETE http://localhost:8080/checklist/1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
+
+### ========================================================
+### ⚙️ UJI COBA PENGATURAN / UPDATE PROFIL USER
+### ========================================================
+
+### 23. Perbarui Profil Pengguna (PUT /me)
+PUT http://localhost:8080/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
+Content-Type: application/json
+
+{
+  "name": "Kevin Pratama"
+}

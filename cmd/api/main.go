@@ -83,6 +83,9 @@ func main() {
 	protected.Use(middleware.AuthMiddleware())
 	{	
 		protected.GET("/me", userHandler.GetMe)
+		protected.PUT("/me", userHandler.UpdateProfile)
+		protected.GET("/users/me", userHandler.GetMe)
+		protected.PUT("/users/profile", userHandler.UpdateProfile)
 		// Produk
 		protected.POST("/products", productHandler.Create)
 		protected.PUT("/products/:id", productHandler.Update)
@@ -106,9 +109,8 @@ func main() {
 		protected.PUT("/cards/:id", cardHandler.Update)
 		protected.PUT("/cards/:id/move", cardHandler.Move)
 		protected.DELETE("/cards/:id", cardHandler.Delete)
-		protected.GET("/users/me", userHandler.GetMe)
 
-				// ✅ Rute Sub-tugas Checklist
+		// ✅ Rute Sub-tugas Checklist
 		protected.POST("/cards/:cardId/checklist", checklistHandler.Create)
 		protected.PUT("/checklist/:id", checklistHandler.Update)
 		protected.DELETE("/checklist/:id", checklistHandler.Delete)

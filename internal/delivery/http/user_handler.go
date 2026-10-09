@@ -75,3 +75,30 @@ func (h *UserHandler) GetMe(c *gin.Context) {
 		"data": user,
 	})
 }
+
+// 4. PUT /users/profile atau PUT /me (Update profil nama/password user)
+func (h *UserHandler) UpdateProfile(c *gin.Context) {
+	userID := getUserID(c)
+	if userID == 0 {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	var req domain.UpdateProfileRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Format JSON tidak valid"})
+		return
+	}
+
+	user, err := h.usecase.UpdateProfile(int(userID), &req)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Profil berhasil diperbarui",
+		"data":    user,
+	})
+}
+

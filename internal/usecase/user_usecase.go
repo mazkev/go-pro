@@ -97,6 +97,36 @@ func (u *userUsecase) GetProfile(userID int) (*domain.User, error) {
 	return user, nil
 }
 
+// 4. Logika Update Profil User (Nama / Password)
+func (u *userUsecase) UpdateProfile(userID int, req *domain.UpdateProfileRequest) (*domain.User, error) {
+	user, err := u.repo.FindByID(userID)
+	if err != nil {
+		return nil, errors.New("user tidak ditemukan")
+	}
+
+	if req.Name != "" {
+		user.Name = req.Name
+	}
+
+	if req.Password != "" {
+		if len(req.Password) < 6 {
+			return nil, errors.New("password minimal harus 6 karakter")
+		}
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+		if err != nil {
+			return nil, errors.New("gagal mengamankan password baru")
+		}
+		user.Password = string(hashedPassword)
+	}
+
+	if err := u.repo.Update(user); err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+
 // Fungsi simulasi pengiriman email asinkron
 func kirimEmailSelamatDatang(email, nama string) {
 	fmt.Printf("⏳ [Goroutine Background] Mulai memproses email selamat datang untuk %s (%s)...\n", nama, email)

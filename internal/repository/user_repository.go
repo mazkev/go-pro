@@ -39,3 +39,9 @@ func (r *userRepository) FindByID(id int) (*domain.User, error) {
 	}
 	return &user, nil
 }
+
+// 4. Update data profil user: UPDATE users SET ... WHERE id = ?
+func (r *userRepository) Update(user *domain.User) error {
+	return r.db.Save(user).Error
+}
+
