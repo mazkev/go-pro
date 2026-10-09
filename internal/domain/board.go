@@ -62,6 +62,7 @@ type BoardUsecase interface {
 	GetMyBoards(userID uint) ([]Board, error)
 	GetBoardDetail(id uint, userID uint) (*Board, error)
 	CreateBoard(userID uint, title string, color string) (*Board, error)
+	UpdateBoard(id uint, userID uint, title string, color string) (*Board, error)
 	DeleteBoard(id uint, userID uint) error
 }
 

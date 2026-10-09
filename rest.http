@@ -126,7 +126,7 @@ X-Tiket-VIP: VIP-123
 
 ### 10. Buat Board Baru (Otomatis Buat 3 Kolom: To Do, In Progress, Done!)
 POST http://localhost:8080/boards
-Authorization: Bearer <TEMPEL_TOKEN_LOGIN_KAMU_DI_SINI>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
 Content-Type: application/json
 
 {
@@ -138,10 +138,57 @@ Content-Type: application/json
 
 ### 11. Ambil Semua Board Milik Saya
 GET http://localhost:8080/boards
-Authorization: Bearer <TEMPEL_TOKEN_LOGIN_KAMU_DI_SINI>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
 
 ###
 
 ### 12. Ambil Detail Board (Beserta Kolom dan Kartunya)
 GET http://localhost:8080/boards/1
-Authorization: Bearer <TEMPEL_TOKEN_LOGIN_KAMU_DI_SINI>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
+
+### ========================================================
+### 🗂️ UJI COBA KARTU KANBAN (CARD & DRAG-AND-DROP)
+### ========================================================
+
+### 13. Tambah Kartu Baru ke Kolom "To Do" (List ID = 1)
+POST http://localhost:8080/lists/1/cards
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
+Content-Type: application/json
+
+{
+  "content": "Desain UI Landing Page",
+  "label": "bg-blue-500",
+  "description": "Buat mockup high-fidelity di Figma"
+}
+
+###
+
+### 14. DRAG & DROP: Pindahkan Kartu dari "To Do" (List 1) ke "In Progress" (List 2)
+PUT http://localhost:8080/cards/1/move
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
+Content-Type: application/json
+
+{
+  "targetListId": 2,
+  "newPosition": 1
+}
+
+###
+
+### 15. Cek Detail Board untuk Membuktikan Kartu Sudah Berpindah Kolom!
+GET http://localhost:8080/boards/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
+
+### 9. Cek Profil Saya (GET /me) - Wajib Token JWT
+GET http://localhost:8080/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
+
+### 13. Rename Board & Ganti Tema Warna (PUT /boards/:id)
+PUT http://localhost:8080/boards/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
+Content-Type: application/json
+
+{
+  "title": "Project Sprint 1 - Revamped",
+  "color": "from-purple-600 to-pink-600"
+}

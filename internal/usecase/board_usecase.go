@@ -59,3 +59,24 @@ func (u *boardUsecase) CreateBoard(userID uint, title string, color string) (*do
 func (u *boardUsecase) DeleteBoard(id uint, userID uint) error {
 	return u.repo.Delete(id, userID)
 }
+
+// 5. Update data Board (Ubah Judul / Warna)
+func (u *boardUsecase) UpdateBoard(id uint, userID uint, title string, color string) (*domain.Board, error) {
+	board, err := u.repo.FindByID(id, userID)
+	if err != nil {
+		return nil, errors.New("board tidak ditemukan atau bukan milik anda")
+	}
+
+	if title != "" {
+		board.Title = title
+	}
+	if color != "" {
+		board.Color = color
+	}
+
+	if err := u.repo.Update(board); err != nil {
+		return nil, err
+	}
+
+	return board, nil
+}

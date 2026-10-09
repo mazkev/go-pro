@@ -108,3 +108,35 @@ func (h *BoardHandler) Delete(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Board berhasil dihapus beserta seluruh isinya"})
 }
+
+type UpdateBoardInput struct {
+	Title string `json:"title"`
+	Color string `json:"color"`
+}
+
+// 5. PUT /boards/:id (Update Judul / Warna Board)
+func (h *BoardHandler) Update(c *gin.Context) {
+	userID := getUserID(c)
+	idParam, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID board tidak valid"})
+		return
+	}
+
+	var input UpdateBoardInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Format JSON tidak valid"})
+		return
+	}
+
+	board, err := h.usecase.UpdateBoard(uint(idParam), userID, input.Title, input.Color)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Board berhasil diperbarui",
+		"data":    board,
+	})
+}

@@ -81,6 +81,7 @@ func main() {
 		protected.GET("/boards", boardHandler.GetMyBoards)
 		protected.GET("/boards/:id", boardHandler.GetByID)
 		protected.POST("/boards", boardHandler.Create)
+		protected.PUT("/boards/:id", boardHandler.Update)
 		protected.DELETE("/boards/:id", boardHandler.Delete)
 
 		// 🗂️ Rute Kartu Tugas & Drag and Drop (BARU!)
