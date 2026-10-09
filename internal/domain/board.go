@@ -78,7 +78,7 @@ type CardRepository interface {
 // 8. Kontrak Usecase Card
 type CardUsecase interface {
 	CreateCard(listID uint, content string, label string, description string) (*Card, error)
-	UpdateCard(id uint, content string, description string, label string, dueDate string, checked bool) (*Card, error)
+	UpdateCard(id uint, content string, description string, label string, coverURL string, dueDate string, checked bool) (*Card, error)
 	MoveCard(id uint, targetListID uint, newPosition int) error
 	DeleteCard(id uint) error
 }

@@ -41,7 +41,7 @@ func (u *cardUsecase) CreateCard(listID uint, content string, label string, desc
 }
 
 // 2. Update data kartu
-func (u *cardUsecase) UpdateCard(id uint, content string, description string, label string, dueDate string, checked bool) (*domain.Card, error) {
+func (u *cardUsecase) UpdateCard(id uint, content string, description string, label string, coverURL string, dueDate string, checked bool) (*domain.Card, error) {
 	card, err := u.repo.FindByID(id)
 	if err != nil {
 		return nil, errors.New("kartu tidak ditemukan")
@@ -54,6 +54,7 @@ func (u *cardUsecase) UpdateCard(id uint, content string, description string, la
 	if label != "" {
 		card.Label = label
 	}
+	card.CoverURL = coverURL
 	card.DueDate = dueDate
 	card.Checked = checked
 

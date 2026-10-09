@@ -26,6 +26,7 @@ type UpdateCardInput struct {
 	Content     string `json:"content"`
 	Description string `json:"description"`
 	Label       string `json:"label"`
+	CoverURL    string `json:"coverUrl"`
 	DueDate     string `json:"dueDate"`
 	Checked     bool   `json:"checked"`
 }
@@ -75,7 +76,7 @@ func (h *CardHandler) Update(c *gin.Context) {
 		return
 	}
 
-	card, err := h.usecase.UpdateCard(uint(cardIDParam), input.Content, input.Description, input.Label, input.DueDate, input.Checked)
+	card, err := h.usecase.UpdateCard(uint(cardIDParam), input.Content, input.Description, input.Label, input.CoverURL, input.DueDate, input.Checked)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
