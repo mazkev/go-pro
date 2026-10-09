@@ -60,6 +60,11 @@ func main() {
 
 	r.Use(middleware.CORSMiddleware())
 
+	// 5. 📑 Kanban List Modules (BARU!)
+	listRepo := repository.NewListRepository(db)
+	listUsecase := usecase.NewListUsecase(listRepo)
+	listHandler := httpDelivery.NewListHandler(listUsecase)
+
 	// 6. Rute Publik
 	r.GET("/products", productHandler.GetAll)
 	r.GET("/products/search", productHandler.Search)
@@ -83,6 +88,12 @@ func main() {
 		protected.POST("/boards", boardHandler.Create)
 		protected.PUT("/boards/:id", boardHandler.Update)
 		protected.DELETE("/boards/:id", boardHandler.Delete)
+
+		// 📑 Rute Kolom/List (BARU!)
+		protected.POST("/boards/:boardId/lists", listHandler.Create)
+		protected.PUT("/lists/:id", listHandler.Update)
+		protected.PUT("/lists/:id/move", listHandler.Move)
+		protected.DELETE("/lists/:id", listHandler.Delete)
 
 		// 🗂️ Rute Kartu Tugas & Drag and Drop (BARU!)
 		protected.POST("/lists/:listId/cards", cardHandler.Create)

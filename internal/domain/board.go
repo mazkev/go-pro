@@ -82,3 +82,20 @@ type CardUsecase interface {
 	MoveCard(id uint, targetListID uint, newPosition int) error
 	DeleteCard(id uint) error
 }
+
+// 9. Kontrak Repository List
+type ListRepository interface {
+	FindByID(id uint) (*List, error)
+	Create(list *List) error
+	Update(list *List) error
+	Delete(id uint) error
+	Move(listID uint, newPosition int) error
+}
+
+// 10. Kontrak Usecase List
+type ListUsecase interface {
+	CreateList(boardID uint, title string) (*List, error)
+	UpdateList(id uint, title string) (*List, error)
+	DeleteList(id uint) error
+	MoveList(id uint, newPosition int) error
+}
