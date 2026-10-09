@@ -99,3 +99,18 @@ type ListUsecase interface {
 	DeleteList(id uint) error
 	MoveList(id uint, newPosition int) error
 }
+
+// 11. Kontrak Repository Checklist
+type ChecklistRepository interface {
+	Create(item *ChecklistItem) error
+	FindByID(id uint) (*ChecklistItem, error)
+	Update(item *ChecklistItem) error
+	Delete(id uint) error
+}
+
+// 12. Kontrak Usecase Checklist
+type ChecklistUsecase interface {
+	CreateItem(cardID uint, title string) (*ChecklistItem, error)
+	UpdateItem(id uint, title string, checked bool) (*ChecklistItem, error)
+	DeleteItem(id uint) error
+}

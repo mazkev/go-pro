@@ -65,6 +65,12 @@ func main() {
 	listUsecase := usecase.NewListUsecase(listRepo)
 	listHandler := httpDelivery.NewListHandler(listUsecase)
 
+		// 6. ✅ Kanban Checklist Modules
+	checklistRepo := repository.NewChecklistRepository(db)
+	checklistUsecase := usecase.NewChecklistUsecase(checklistRepo)
+	checklistHandler := httpDelivery.NewChecklistHandler(checklistUsecase)
+
+
 	// 6. Rute Publik
 	r.GET("/products", productHandler.GetAll)
 	r.GET("/products/search", productHandler.Search)
@@ -101,6 +107,12 @@ func main() {
 		protected.PUT("/cards/:id/move", cardHandler.Move)
 		protected.DELETE("/cards/:id", cardHandler.Delete)
 		protected.GET("/users/me", userHandler.GetMe)
+
+				// ✅ Rute Sub-tugas Checklist
+		protected.POST("/cards/:cardId/checklist", checklistHandler.Create)
+		protected.PUT("/checklist/:id", checklistHandler.Update)
+		protected.DELETE("/checklist/:id", checklistHandler.Delete)
+
 	}
 	
 
