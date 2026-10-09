@@ -192,3 +192,70 @@ Content-Type: application/json
   "title": "Project Sprint 1 - Revamped",
   "color": "from-purple-600 to-pink-600"
 }
+
+### ========================================================
+### 📑 UJI COBA MODUL LIST / KOLOM (KANBAN COLUMNS)
+### ========================================================
+
+### 16. Tambah Kolom Baru ke Board ID 1 (POST /boards/:boardId/lists)
+POST http://localhost:8080/boards/1/lists
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
+Content-Type: application/json
+
+{
+  "title": "Testing & QA"
+}
+
+###
+### 17. Rename Judul Kolom (PUT /lists/:id)
+PUT http://localhost:8080/lists/4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
+Content-Type: application/json
+
+{
+  "title": "Quality Assurance (QA)"
+}
+
+###
+### 18. Geser Urutan Kolom / Reorder (PUT /lists/:id/move)
+PUT http://localhost:8080/lists/4/move
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
+Content-Type: application/json
+
+{
+  "position": 3
+}
+
+###
+### 19. Hapus Kolom Beserta Seluruh Kartu di Dalamnya (DELETE /lists/:id)
+DELETE http://localhost:8080/lists/4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
+
+### ========================================================
+### ✅ UJI COBA MODUL CHECKLIST SUB-TUGAS KARTU
+### ========================================================
+
+### 20. Tambah Sub-Tugas ke Kartu ID 1 (POST /cards/:cardId/checklist)
+POST http://localhost:8080/cards/1/checklist
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
+Content-Type: application/json
+
+{
+  "title": "Bikin wireframe di Figma"
+}
+
+###
+### 21. Centang Selesai / Toggle Checklist (PUT /checklist/:id)
+PUT http://localhost:8080/checklist/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
+Content-Type: application/json
+
+{
+  "title": "Bikin wireframe di Figma",
+  "checked": true
+}
+
+###
+### 22. Hapus Sub-Tugas (DELETE /checklist/:id)
+DELETE http://localhost:8080/checklist/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
