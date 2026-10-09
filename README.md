@@ -34,11 +34,12 @@ Production-grade RESTful API backend built with **Golang**, **Clean Architecture
 
 ## 📡 API Endpoints Reference
 
-### 1. Authentication (`/`)
+### 1. Authentication & Profile (`/`)
 | Method | Endpoint | Access | Description |
 | :--- | :--- | :--- | :--- |
 | `POST` | `/register` | Public | Register new user (triggers async welcome email) |
 | `POST` | `/login` | Public | Authenticate user & issue signed JWT Bearer token |
+| `GET` | `/me` | 🔒 Private | Verify active user session and retrieve profile info |
 
 ### 2. 📋 Kanban Board (`/boards`)
 | Method | Endpoint | Access | Description |
@@ -46,9 +47,18 @@ Production-grade RESTful API backend built with **Golang**, **Clean Architecture
 | `GET` | `/boards` | 🔒 Private | Retrieve all boards owned by the authenticated user |
 | `GET` | `/boards/:id` | 🔒 Private | Retrieve single board with nested lists, cards & checklists |
 | `POST` | `/boards` | 🔒 Private | Create new board (auto-generates "To Do", "In Progress", "Done") |
+| `PUT` | `/boards/:id` | 🔒 Private | Update board title and color theme |
 | `DELETE` | `/boards/:id` | 🔒 Private | Delete board and cascade-delete all child lists and cards |
 
-### 3. 🗂️ Kanban Cards & Drag-and-Drop (`/cards`)
+### 3. 📑 Kanban Lists / Columns (`/lists`)
+| Method | Endpoint | Access | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/boards/:boardId/lists` | 🔒 Private | Add new column into a specific board |
+| `PUT` | `/lists/:id` | 🔒 Private | Rename column title |
+| `PUT` | `/lists/:id/move` | 🔒 Private | **Reorder**: Change column position index |
+| `DELETE` | `/lists/:id` | 🔒 Private | Delete column and cascade-delete all task cards inside |
+
+### 4. 🗂️ Kanban Cards & Drag-and-Drop (`/cards`)
 | Method | Endpoint | Access | Description |
 | :--- | :--- | :--- | :--- |
 | `POST` | `/lists/:listId/cards` | 🔒 Private | Add new task card into a specific column list |
@@ -56,7 +66,14 @@ Production-grade RESTful API backend built with **Golang**, **Clean Architecture
 | `PUT` | `/cards/:id/move` | 🔒 Private | **Drag & Drop**: Move card across columns or reorder position |
 | `DELETE` | `/cards/:id` | 🔒 Private | Delete a task card |
 
-### 4. 📦 Product Catalog (`/products`)
+### 5. ✅ Card Checklists / Sub-Tasks (`/checklist`)
+| Method | Endpoint | Access | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/cards/:cardId/checklist` | 🔒 Private | Add new sub-task item to a card |
+| `PUT` | `/checklist/:id` | 🔒 Private | Toggle sub-task status (completed / pending) or edit title |
+| `DELETE` | `/checklist/:id` | 🔒 Private | Delete a sub-task item |
+
+### 6. 📦 Product Catalog (`/products`)
 | Method | Endpoint | Access | Description |
 | :--- | :--- | :--- | :--- |
 | `GET` | `/products` | Public | List active products |
@@ -85,20 +102,26 @@ Production-grade RESTful API backend built with **Golang**, **Clean Architecture
 │   │       │   └── cors_middleware.go  # Cross-Origin Resource Sharing handler
 │   │       ├── board_handler.go        # Kanban Board HTTP controller
 │   │       ├── card_handler.go         # Kanban Card & Drag-and-Drop controller
+│   │       ├── checklist_handler.go    # Task Checklist controller
+│   │       ├── list_handler.go         # Kanban List/Column controller
 │   │       ├── product_handler.go      # Product HTTP controller
-│   │       └── user_handler.go         # Auth HTTP controller
+│   │       └── user_handler.go         # Auth & Profile HTTP controller
 │   ├── domain/
-│   │   ├── board.go                    # Kanban models (Board, List, Card, Checklist) & interfaces
-│   │   ├── product.go                  # Product model with Soft Delete & interfaces
-│   │   └── user.go                     # User model & interfaces
+│   │   ├── board.go                    # Kanban models (Board, List, Card, Checklist) & contracts
+│   │   ├── product.go                  # Product model with Soft Delete & contracts
+│   │   └── user.go                     # User model & contracts
 │   ├── repository/
 │   │   ├── board_repository.go         # GORM nested preload repository
 │   │   ├── card_repository.go          # Card CRUD & atomic move repository
+│   │   ├── checklist_repository.go     # Checklist item repository
+│   │   ├── list_repository.go          # List CRUD & column reordering repository
 │   │   ├── product_repository.go       # Product SQLite repository
 │   │   └── user_repository.go          # User database access
 │   ├── usecase/
 │   │   ├── board_usecase.go            # Board business logic (auto-default lists)
 │   │   ├── card_usecase.go             # Card business logic
+│   │   ├── checklist_usecase.go        # Checklist item business logic
+│   │   ├── list_usecase.go             # List/Column business logic
 │   │   ├── product_usecase.go          # Product business logic & validations
 │   │   ├── product_usecase_test.go     # Table-Driven Unit Tests with Mock Repository
 │   │   └── user_usecase.go             # Auth logic & async Goroutine email triggers
