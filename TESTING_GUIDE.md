@@ -111,6 +111,31 @@ Setelah kedua server dinyalakan dan Anda membuka `http://localhost:5173`:
 
 ---
 
+### Skenario 5: Menguji Fitur Kalender Bulanan Interaktif (Calendar View)
+1. Di sidebar kiri, klik menu **Calendar**.
+2. Periksa tampilan **Grid Bulan**:
+   - Grid 7 kolom (Minggu s/d Sabtu) dengan kotak-kotak tanggal.
+   - Penanda lingkaran biru untuk hari ini (*Today indicator*).
+   - Kartu tugas yang memiliki `dueDate` muncul di kotak tanggal yang sesuai.
+3. Klik tombol `<` dan `>` untuk beralih antar bulan, atau klik **Hari Ini**.
+4. Klik salah satu kartu di dalam kotak tanggal: modal kartu langsung terbuka!
+5. Coba klik toggle **Agenda** untuk melihat tampilan daftar deadline urut waktu.
+
+---
+
+### Skenario 6: Menguji Fitur Upload & Lampiran File (Card Attachments)
+1. Buka salah satu kartu di papan Kanban.
+2. Klik tombol **Attachment** di sidebar kanan atau tombol **+ Tambah Lampiran**.
+3. Pilih file gambar (PNG/JPG) atau dokumen PDF.
+4. Periksa:
+   - File terunggah ke backend Go (`/uploads/attachments/...`).
+   - Thumbnail gambar, nama file, ukuran KB, dan tanggal unggah langsung tampil.
+   - Tombol unduh membuka file asli dari server backend.
+5. Tutup modal: kartu di board menampilkan badge ikon paperclip (`📎 1`).
+6. Buka kembali modal kartu dan klik ikon tempat sampah (🗑️) untuk menghapus lampiran.
+
+---
+
 ## ⚡ 4. Skenario Pengujian Backend API (via `rest.http`)
 
 Gunakan ekstensi **REST Client** di IDE pada berkas [`rest.http`](file:///d:/prog/tes%20only/rest.http):
