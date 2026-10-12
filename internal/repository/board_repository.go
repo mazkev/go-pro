@@ -20,14 +20,14 @@ func NewBoardRepository(db *gorm.DB) domain.BoardRepository {
 func (r *boardRepository) FindAllByUserID(userID uint) ([]domain.Board, error) {
 	var boards []domain.Board
 	// Nested Preload: Otomatis load Lists -> Cards -> Checklist & Comments!
-	err := r.db.Preload("Lists.Cards.Checklist").Preload("Lists.Cards.Comments").Where("user_id = ?", userID).Find(&boards).Error
+	err := r.db.Preload("Lists.Cards.Checklist").Preload("Lists.Cards.Comments").Preload("Lists.Cards.Attachments").Where("user_id = ?", userID).Find(&boards).Error
 	return boards, err
 }
 
 // 2. Ambil 1 board detail berdasarkan ID dan pemiliknya
 func (r *boardRepository) FindByID(id uint, userID uint) (*domain.Board, error) {
 	var board domain.Board
-	err := r.db.Preload("Lists.Cards.Checklist").Preload("Lists.Cards.Comments").Where("id = ? AND user_id = ?", id, userID).First(&board).Error
+	err := r.db.Preload("Lists.Cards.Checklist").Preload("Lists.Cards.Comments").Preload("Lists.Cards.Attachments").Where("id = ? AND user_id = ?", id, userID).First(&board).Error
 	if err != nil {
 		return nil, err
 	}

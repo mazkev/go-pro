@@ -37,6 +37,7 @@ type Card struct {
 	Position    int             `json:"position"`            // Urutan kartu di dalam kolom
 	Checklist   []ChecklistItem `json:"checklist" gorm:"foreignKey:CardID;constraint:OnDelete:CASCADE"`
 	Comments    []Comment       `json:"comments" gorm:"foreignKey:CardID;constraint:OnDelete:CASCADE"`
+	Attachments []Attachment    `json:"attachments" gorm:"foreignKey:CardID;constraint:OnDelete:CASCADE"` 
 	CreatedAt   time.Time       `json:"createdAt"`
 	UpdatedAt   time.Time       `json:"updatedAt"`
 }
@@ -141,4 +142,31 @@ type CommentUsecase interface {
 	GetCommentsByCardID(cardID uint) ([]Comment, error)
 	DeleteComment(id uint, userID uint) error
 }
+
+// 16. Model Attachment (Lampiran File pada Kartu Tugas)
+type Attachment struct {
+	ID        uint      `json:"id" gorm:"primaryKey"`
+	CardID    uint      `json:"cardId" gorm:"index;not null"`
+	FileName  string    `json:"fileName" gorm:"not null"`
+	FilePath  string    `json:"filePath" gorm:"not null"` // e.g. "/uploads/attachments/..."
+	FileSize  int64     `json:"fileSize"`                  // Ukuran file dalam bytes
+	FileType  string    `json:"fileType"`                  // e.g. "image/png", "application/pdf"
+	CreatedAt time.Time `json:"createdAt"`
+}
+
+// 17. Kontrak Repository Attachment
+type AttachmentRepository interface {
+	Create(attachment *Attachment) error
+	FindByCardID(cardID uint) ([]Attachment, error)
+	FindByID(id uint) (*Attachment, error)
+	Delete(id uint) error
+}
+
+// 18. Kontrak Usecase Attachment
+type AttachmentUsecase interface {
+	CreateAttachment(attachment *Attachment) error
+	GetAttachmentsByCardID(cardID uint) ([]Attachment, error)
+	DeleteAttachment(id uint) error
+}
+
 

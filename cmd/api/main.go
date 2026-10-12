@@ -27,6 +27,7 @@ func initDB() *gorm.DB {
 		&domain.Card{},
 		&domain.ChecklistItem{},
 		&domain.Comment{},
+		&domain.Attachment{},
 	)
 	return db
 }
@@ -76,6 +77,10 @@ func main() {
 	commentUsecase := usecase.NewCommentUsecase(commentRepo, cardRepo, userRepo)
 	commentHandler := httpDelivery.NewCommentHandler(commentUsecase)
 
+	// 8. 📎 Kanban Card Attachment Modules (BARU!)
+	attachmentRepo := repository.NewAttachmentRepository(db)
+	attachmentUsecase := usecase.NewAttachmentUsecase(attachmentRepo, cardRepo)
+	attachmentHandler := httpDelivery.NewAttachmentHandler(attachmentUsecase)
 
 	// 6. Rute Publik
 	r.GET("/products", productHandler.GetAll)
@@ -83,6 +88,7 @@ func main() {
 	r.GET("/products/:id", productHandler.GetByID)
 	r.POST("/register", userHandler.Register)
 	r.POST("/login", userHandler.Login)
+	r.Static("/uploads", "./uploads")
 
 	// 7. Rute Terkunci (Wajib Token JWT)
 	protected := r.Group("/")
@@ -126,6 +132,10 @@ func main() {
 		protected.GET("/cards/:cardId/comments", commentHandler.GetByCardID)
 		protected.DELETE("/comments/:id", commentHandler.Delete)
 
+		// 📎 Rute Lampiran File Kartu (BARU!)
+		protected.POST("/cards/:cardId/attachments", attachmentHandler.Upload)
+		protected.GET("/cards/:cardId/attachments", attachmentHandler.GetByCardID)
+		protected.DELETE("/attachments/:id", attachmentHandler.Delete)
 	}
 	
 
