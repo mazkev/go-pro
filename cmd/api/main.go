@@ -117,7 +117,7 @@ func main() {
 		protected.DELETE("/boards/:id", boardHandler.Delete)
 
 		// 📑 Rute Kolom/List (BARU!)
-		protected.POST("/boards/:boardId/lists", listHandler.Create)
+		protected.POST("/boards/:id/lists", listHandler.Create)
 		protected.PUT("/lists/:id", listHandler.Update)
 		protected.PUT("/lists/:id/move", listHandler.Move)
 		protected.DELETE("/lists/:id", listHandler.Delete)
@@ -144,11 +144,11 @@ func main() {
 		protected.DELETE("/attachments/:id", attachmentHandler.Delete)
 
 		// 👥 Rute Anggota Board & Penugasan Kartu (RBAC - BARU!)
-		protected.POST("/boards/:boardId/members", memberHandler.Invite)
-		protected.GET("/boards/:boardId/members", memberHandler.GetMembers)
-		protected.PUT("/boards/:boardId/members/:userId", memberHandler.UpdateRole)
-		protected.DELETE("/boards/:boardId/members/:userId", memberHandler.RemoveMember)
-		protected.PUT("/cards/:cardId/assign", memberHandler.AssignCard)
+		protected.POST("/boards/:id/members", memberHandler.Invite)
+		protected.GET("/boards/:id/members", memberHandler.GetMembers)
+		protected.PUT("/boards/:id/members/:userId", memberHandler.UpdateRole)
+		protected.DELETE("/boards/:id/members/:userId", memberHandler.RemoveMember)
+		protected.PUT("/cards/:id/assign", memberHandler.AssignCard)
 	}
 	
 

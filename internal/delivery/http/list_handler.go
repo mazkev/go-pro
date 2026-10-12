@@ -28,9 +28,13 @@ type MoveListInput struct {
 	Position int `json:"position"`
 }
 
-// 1. POST /boards/:boardId/lists (Tambah kolom ke board)
+// 1. POST /boards/:id/lists (Tambah kolom ke board)
 func (h *ListHandler) Create(c *gin.Context) {
-	boardIDParam, err := strconv.Atoi(c.Param("boardId"))
+	boardIDStr := c.Param("id")
+	if boardIDStr == "" {
+		boardIDStr = c.Param("boardId")
+	}
+	boardIDParam, err := strconv.Atoi(boardIDStr)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID board tidak valid"})
 		return

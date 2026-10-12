@@ -34,9 +34,22 @@ type AssignCardInput struct {
 	AssigneeName string `json:"assigneeName"`
 }
 
-// 1. POST /boards/:boardId/members (Undang anggota baru ke board)
+// Helper untuk mengambil ID board dari param URL (:id atau :boardId)
+func getBoardID(c *gin.Context) (uint, error) {
+	val := c.Param("id")
+	if val == "" {
+		val = c.Param("boardId")
+	}
+	id, err := strconv.Atoi(val)
+	if err != nil {
+		return 0, err
+	}
+	return uint(id), nil
+}
+
+// 1. POST /boards/:id/members (Undang anggota baru ke board)
 func (h *BoardMemberHandler) Invite(c *gin.Context) {
-	boardIDParam, err := strconv.Atoi(c.Param("boardId"))
+	boardID, err := getBoardID(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID papan tidak valid"})
 		return
@@ -54,7 +67,7 @@ func (h *BoardMemberHandler) Invite(c *gin.Context) {
 		return
 	}
 
-	member, err := h.memberUsecase.InviteMember(uint(boardIDParam), currentUserID, input.Email, input.Role)
+	member, err := h.memberUsecase.InviteMember(boardID, currentUserID, input.Email, input.Role)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -66,9 +79,9 @@ func (h *BoardMemberHandler) Invite(c *gin.Context) {
 	})
 }
 
-// 2. GET /boards/:boardId/members (Ambil daftar anggota board)
+// 2. GET /boards/:id/members (Ambil daftar anggota board)
 func (h *BoardMemberHandler) GetMembers(c *gin.Context) {
-	boardIDParam, err := strconv.Atoi(c.Param("boardId"))
+	boardID, err := getBoardID(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID papan tidak valid"})
 		return
@@ -80,7 +93,7 @@ func (h *BoardMemberHandler) GetMembers(c *gin.Context) {
 		return
 	}
 
-	members, err := h.memberUsecase.GetBoardMembers(uint(boardIDParam), currentUserID)
+	members, err := h.memberUsecase.GetBoardMembers(boardID, currentUserID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -91,9 +104,9 @@ func (h *BoardMemberHandler) GetMembers(c *gin.Context) {
 	})
 }
 
-// 3. PUT /boards/:boardId/members/:userId (Ubah role anggota)
+// 3. PUT /boards/:id/members/:userId (Ubah role anggota)
 func (h *BoardMemberHandler) UpdateRole(c *gin.Context) {
-	boardIDParam, err := strconv.Atoi(c.Param("boardId"))
+	boardID, err := getBoardID(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID papan tidak valid"})
 		return
@@ -117,7 +130,7 @@ func (h *BoardMemberHandler) UpdateRole(c *gin.Context) {
 		return
 	}
 
-	if err := h.memberUsecase.UpdateMemberRole(uint(boardIDParam), currentUserID, uint(targetUserIDParam), input.Role); err != nil {
+	if err := h.memberUsecase.UpdateMemberRole(boardID, currentUserID, uint(targetUserIDParam), input.Role); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -127,9 +140,9 @@ func (h *BoardMemberHandler) UpdateRole(c *gin.Context) {
 	})
 }
 
-// 4. DELETE /boards/:boardId/members/:userId (Keluarkan anggota dari board)
+// 4. DELETE /boards/:id/members/:userId (Keluarkan anggota dari board)
 func (h *BoardMemberHandler) RemoveMember(c *gin.Context) {
-	boardIDParam, err := strconv.Atoi(c.Param("boardId"))
+	boardID, err := getBoardID(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID papan tidak valid"})
 		return
@@ -147,7 +160,7 @@ func (h *BoardMemberHandler) RemoveMember(c *gin.Context) {
 		return
 	}
 
-	if err := h.memberUsecase.RemoveMember(uint(boardIDParam), currentUserID, uint(targetUserIDParam)); err != nil {
+	if err := h.memberUsecase.RemoveMember(boardID, currentUserID, uint(targetUserIDParam)); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -157,9 +170,13 @@ func (h *BoardMemberHandler) RemoveMember(c *gin.Context) {
 	})
 }
 
-// 5. PUT /cards/:cardId/assign (Tugaskan anggota ke kartu tugas)
+// 5. PUT /cards/:id/assign (Tugaskan anggota ke kartu tugas)
 func (h *BoardMemberHandler) AssignCard(c *gin.Context) {
-	cardIDParam, err := strconv.Atoi(c.Param("cardId"))
+	cardIDStr := c.Param("id")
+	if cardIDStr == "" {
+		cardIDStr = c.Param("cardId")
+	}
+	cardIDParam, err := strconv.Atoi(cardIDStr)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID kartu tidak valid"})
 		return
