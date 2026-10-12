@@ -26,6 +26,7 @@ func initDB() *gorm.DB {
 		&domain.List{},
 		&domain.Card{},
 		&domain.ChecklistItem{},
+		&domain.Comment{},
 	)
 	return db
 }
@@ -65,10 +66,15 @@ func main() {
 	listUsecase := usecase.NewListUsecase(listRepo)
 	listHandler := httpDelivery.NewListHandler(listUsecase)
 
-		// 6. ✅ Kanban Checklist Modules
+	// 6. ✅ Kanban Checklist Modules
 	checklistRepo := repository.NewChecklistRepository(db)
 	checklistUsecase := usecase.NewChecklistUsecase(checklistRepo)
 	checklistHandler := httpDelivery.NewChecklistHandler(checklistUsecase)
+
+	// 7. 💬 Kanban Card Comment Modules
+	commentRepo := repository.NewCommentRepository(db)
+	commentUsecase := usecase.NewCommentUsecase(commentRepo, cardRepo, userRepo)
+	commentHandler := httpDelivery.NewCommentHandler(commentUsecase)
 
 
 	// 6. Rute Publik
@@ -114,6 +120,11 @@ func main() {
 		protected.POST("/cards/:cardId/checklist", checklistHandler.Create)
 		protected.PUT("/checklist/:id", checklistHandler.Update)
 		protected.DELETE("/checklist/:id", checklistHandler.Delete)
+
+		// 💬 Rute Komentar & Aktivitas Kartu
+		protected.POST("/cards/:cardId/comments", commentHandler.Create)
+		protected.GET("/cards/:cardId/comments", commentHandler.GetByCardID)
+		protected.DELETE("/comments/:id", commentHandler.Delete)
 
 	}
 	

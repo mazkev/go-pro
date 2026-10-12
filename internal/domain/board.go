@@ -36,6 +36,7 @@ type Card struct {
 	Checked     bool            `json:"checked"`
 	Position    int             `json:"position"`            // Urutan kartu di dalam kolom
 	Checklist   []ChecklistItem `json:"checklist" gorm:"foreignKey:CardID;constraint:OnDelete:CASCADE"`
+	Comments    []Comment       `json:"comments" gorm:"foreignKey:CardID;constraint:OnDelete:CASCADE"`
 	CreatedAt   time.Time       `json:"createdAt"`
 	UpdatedAt   time.Time       `json:"updatedAt"`
 }
@@ -114,3 +115,30 @@ type ChecklistUsecase interface {
 	UpdateItem(id uint, title string, checked bool) (*ChecklistItem, error)
 	DeleteItem(id uint) error
 }
+
+// 13. Model Comment (Komentar pada Kartu Tugas)
+type Comment struct {
+	ID        uint      `json:"id" gorm:"primaryKey"`
+	CardID    uint      `json:"cardId" gorm:"index;not null"`
+	UserID    uint      `json:"userId" gorm:"index;not null"`
+	UserName  string    `json:"userName"`
+	Content   string    `json:"content" gorm:"not null"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+// 14. Kontrak Repository Comment
+type CommentRepository interface {
+	Create(comment *Comment) error
+	FindByCardID(cardID uint) ([]Comment, error)
+	FindByID(id uint) (*Comment, error)
+	Delete(id uint) error
+}
+
+// 15. Kontrak Usecase Comment
+type CommentUsecase interface {
+	CreateComment(cardID uint, userID uint, content string) (*Comment, error)
+	GetCommentsByCardID(cardID uint) ([]Comment, error)
+	DeleteComment(id uint, userID uint) error
+}
+

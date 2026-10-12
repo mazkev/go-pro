@@ -272,3 +272,27 @@ Content-Type: application/json
 {
   "name": "Kevin Pratama"
 }
+
+### ========================================================
+### 💬 UJI COBA MODUL KOMENTAR & AKTIVITAS KARTU
+### ========================================================
+
+### 24. Tambah Komentar ke Kartu (POST /cards/:cardId/comments)
+POST http://localhost:8080/cards/1/comments
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
+Content-Type: application/json
+
+{
+  "content": "Desain wireframe sudah selesai dan siap di-review tim!"
+}
+
+###
+### 25. Ambil Seluruh Komentar Kartu (GET /cards/:cardId/comments)
+GET http://localhost:8080/cards/1/comments
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
+
+###
+### 26. Hapus Komentar (DELETE /comments/:id)
+DELETE http://localhost:8080/comments/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
+
