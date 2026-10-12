@@ -136,6 +136,25 @@ Setelah kedua server dinyalakan dan Anda membuka `http://localhost:5173`:
 
 ---
 
+### Skenario 7: Kolaborasi Multi-User, Role-Based Access Control (RBAC) & Card Assignee
+1. **Mengundang Anggota Board (Share Modal):**
+   - Pada header board Kanban, perhatikan avatar anggota dan tombol **Share** (ikon `UserPlus`).
+   - Klik tombol **Share**. Modal manajemen kolaborator akan terbuka.
+   - Masukkan email pengguna terdaftar (misal: `user2@example.com`).
+   - Pilih peran (*Role*): `Admin`, `Member`, atau `Viewer`.
+   - Klik **Undang**. Anggota baru akan langsung muncul di daftar dengan badge peran.
+2. **Mengubah Peran & Menghapus Anggota:**
+   - Sebagai pemilik/admin board, Anda dapat mengubah peran anggota via dropdown role (`Admin`, `Member`, `Viewer`).
+   - Klik tombol hapus (🗑️) untuk mengeluarkan anggota dari board.
+3. **Menugaskan Anggota ke Kartu (Card Assignee):**
+   - Buka modal salah satu kartu tugas.
+   - Klik tombol **Members** di sidebar aksi kartu.
+   - Popover pemilih anggota akan muncul menampilkan seluruh kolaborator board.
+   - Klik nama anggota untuk menugaskannya ke kartu tersebut (atau klik *Tanpa Penugasan* untuk melepas).
+   - Tutup modal: kartu pada kolom Kanban akan menampilkan avatar assignee di pojok kanan bawah.
+
+---
+
 ## ⚡ 4. Skenario Pengujian Backend API (via `rest.http`)
 
 Gunakan ekstensi **REST Client** di IDE pada berkas [`rest.http`](file:///d:/prog/tes%20only/rest.http):
@@ -155,6 +174,12 @@ Gunakan ekstensi **REST Client** di IDE pada berkas [`rest.http`](file:///d:/pro
 5. **Langkah 5: Update Profil (Request #23)**
    - Jalankan request baris 267 (`PUT http://localhost:8080/me`).
    - Respon yang diharapkan: HTTP `200 OK` dengan user profil yang sudah diperbarui.
+6. **Langkah 6: Manajemen Kolaborator & RBAC (Request #29 - #33)**
+   - **Request #29**: `POST /boards/1/members` (Undang anggota baru dengan role `member`/`viewer`).
+   - **Request #30**: `GET /boards/1/members` (Daftar semua anggota dan peran mereka).
+   - **Request #31**: `PUT /boards/1/members/:userId` (Ubah role menjadi `admin`, `member`, atau `viewer`).
+   - **Request #32**: `DELETE /boards/1/members/:userId` (Keluarkan anggota dari board).
+   - **Request #33**: `PUT /cards/1/assign` (Tugaskan user ID tertentu ke kartu).
 
 ---
 
@@ -173,21 +198,28 @@ go test -v ./internal/usecase/...
    - Validasi pembuatan board & otomatisasi 3 kolom bawaan (*To Do*, *In Progress*, *Done*).
    - Validasi update board dan proteksi hak milik user.
    - Hapus board.
-2. **Card Usecase** (`card_usecase_test.go`):
+2. **Board Member & RBAC Usecase** (`board_member_usecase_test.go`):
+   - Validasi undang anggota baru dengan email terdaftar dan role valid.
+   - Proteksi hak admin (hanya admin/owner yang bisa mengundang dan mengganti role).
+   - Proteksi role owner tidak dapat diturunkan/dihapus.
+   - Pencegahan duplikasi anggota dalam board yang sama.
+3. **Card Usecase** (`card_usecase_test.go`):
    - Validasi pembuatan kartu & default warna label.
    - Perpindahan/geser kartu antar kolom (*move card*).
    - Pembaruan isi, label, cover, dan status checklist kartu.
-3. **Checklist Usecase** (`checklist_usecase_test.go`):
+   - Penugasan anggota ke kartu (*AssignCard*).
+4. **Checklist Usecase** (`checklist_usecase_test.go`):
    - Pembuatan sub-tugas dan validasi judul wajib diisi.
    - Toggle centang selesai/belum selesai.
    - Penghapusan sub-tugas.
-4. **Comment Usecase** (`comment_usecase_test.go`):
+5. **Comment Usecase** (`comment_usecase_test.go`):
    - Validasi komentar tidak boleh kosong dan kartu harus ada.
    - Resolusi nama author komentar.
    - Proteksi hak akses delete (hanya pemilik yang dapat menghapus).
-5. **User Usecase** (`user_usecase_test.go`):
+6. **User Usecase** (`user_usecase_test.go`):
    - Validasi registrasi, deteksi email duplikat, dan enkripsi bcrypt password.
    - Update profil pengguna.
 
 ---
 *Semua perubahan dan unit test telah terintegrasi dan siap untuk diuji secara mandiri!*
+
