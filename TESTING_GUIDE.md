@@ -132,4 +132,37 @@ Gunakan ekstensi **REST Client** di IDE pada berkas [`rest.http`](file:///d:/pro
    - Respon yang diharapkan: HTTP `200 OK` dengan user profil yang sudah diperbarui.
 
 ---
-*Semua perubahan telah terintegrasi dan siap untuk diuji secara mandiri!*
+
+## 🧪 5. Menjalankan Unit Testing Mandiri
+
+Seluruh logika bisnis (Usecase) telah dilengkapi dengan unit test berbasis Table-Driven Tests dan Mock Repository:
+
+### Perintah Menjalankan Unit Test (Terminal/PowerShell):
+```powershell
+cd "d:\prog\tes only"
+go test -v ./internal/usecase/...
+```
+
+### Cakupan Unit Test yang Telah Diimplementasikan:
+1. **Board Usecase** (`board_usecase_test.go`):
+   - Validasi pembuatan board & otomatisasi 3 kolom bawaan (*To Do*, *In Progress*, *Done*).
+   - Validasi update board dan proteksi hak milik user.
+   - Hapus board.
+2. **Card Usecase** (`card_usecase_test.go`):
+   - Validasi pembuatan kartu & default warna label.
+   - Perpindahan/geser kartu antar kolom (*move card*).
+   - Pembaruan isi, label, cover, dan status checklist kartu.
+3. **Checklist Usecase** (`checklist_usecase_test.go`):
+   - Pembuatan sub-tugas dan validasi judul wajib diisi.
+   - Toggle centang selesai/belum selesai.
+   - Penghapusan sub-tugas.
+4. **Comment Usecase** (`comment_usecase_test.go`):
+   - Validasi komentar tidak boleh kosong dan kartu harus ada.
+   - Resolusi nama author komentar.
+   - Proteksi hak akses delete (hanya pemilik yang dapat menghapus).
+5. **User Usecase** (`user_usecase_test.go`):
+   - Validasi registrasi, deteksi email duplikat, dan enkripsi bcrypt password.
+   - Update profil pengguna.
+
+---
+*Semua perubahan dan unit test telah terintegrasi dan siap untuk diuji secara mandiri!*
