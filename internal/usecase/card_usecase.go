@@ -77,3 +77,20 @@ func (u *cardUsecase) MoveCard(id uint, targetListID uint, newPosition int) erro
 func (u *cardUsecase) DeleteCard(id uint) error {
 	return u.repo.Delete(id)
 }
+
+// 5. Tugaskan kartu ke anggota (atau unassign jika nil)
+func (u *cardUsecase) AssignCard(cardID uint, assigneeID *uint, assigneeName string) (*domain.Card, error) {
+	card, err := u.repo.FindByID(cardID)
+	if err != nil || card == nil {
+		return nil, errors.New("kartu tidak ditemukan")
+	}
+
+	card.AssigneeID = assigneeID
+	card.AssigneeName = assigneeName
+
+	if err := u.repo.Update(card); err != nil {
+		return nil, err
+	}
+
+	return card, nil
+}

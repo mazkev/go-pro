@@ -296,3 +296,60 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlb
 DELETE http://localhost:8080/comments/1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
 
+### ========================================================
+### 📎 UJI COBA MODUL LAMPIRAN FILE (ATTACHMENTS)
+### ========================================================
+
+### 27. Ambil Seluruh Lampiran Milik Kartu (GET /cards/:cardId/attachments)
+GET http://localhost:8080/cards/1/attachments
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
+
+###
+### 28. Hapus Lampiran dari Kartu (DELETE /attachments/:id)
+DELETE http://localhost:8080/attachments/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
+
+### ========================================================
+### 👥 UJI COBA MODUL ANGGOTA BOARD & ROLE-BASED ACCESS CONTROL (RBAC)
+### ========================================================
+
+### 29. Undang Anggota Baru ke Board (POST /boards/:boardId/members)
+POST http://localhost:8080/boards/1/members
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
+Content-Type: application/json
+
+{
+  "email": "kevin@example.com",
+  "role": "member"
+}
+
+###
+### 30. Ambil Seluruh Anggota Board Beserta Role-nya (GET /boards/:boardId/members)
+GET http://localhost:8080/boards/1/members
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
+
+###
+### 31. Ubah Peran Anggota: Jadi Admin / Viewer (PUT /boards/:boardId/members/:userId)
+PUT http://localhost:8080/boards/1/members/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
+Content-Type: application/json
+
+{
+  "role": "admin"
+}
+
+###
+### 32. Tugaskan Anggota ke Kartu Tugas (PUT /cards/:cardId/assign)
+PUT http://localhost:8080/cards/1/assign
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs
+Content-Type: application/json
+
+{
+  "assigneeId": 1,
+  "assigneeName": "Kevin Pratama"
+}
+
+###
+### 33. Keluarkan Anggota dari Board (DELETE /boards/:boardId/members/:userId)
+DELETE http://localhost:8080/boards/1/members/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImtldmluQGV4YW1wbGUuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNzkxNTI4Mjc4LCJpYXQiOjE3OTE0NDE4Nzh9.pnz1L3vAGvspe2cnPjJfu07sHw54145XWm3vL_FXpDs

@@ -28,6 +28,7 @@ func initDB() *gorm.DB {
 		&domain.ChecklistItem{},
 		&domain.Comment{},
 		&domain.Attachment{},
+		&domain.BoardMember{},
 	)
 	return db
 }
@@ -81,6 +82,11 @@ func main() {
 	attachmentRepo := repository.NewAttachmentRepository(db)
 	attachmentUsecase := usecase.NewAttachmentUsecase(attachmentRepo, cardRepo)
 	attachmentHandler := httpDelivery.NewAttachmentHandler(attachmentUsecase)
+
+	// 9. 👥 Kanban Board Members & RBAC Modules (BARU!)
+	memberRepo := repository.NewBoardMemberRepository(db)
+	memberUsecase := usecase.NewBoardMemberUsecase(memberRepo, boardRepo, userRepo)
+	memberHandler := httpDelivery.NewBoardMemberHandler(memberUsecase, cardUsecase)
 
 	// 6. Rute Publik
 	r.GET("/products", productHandler.GetAll)
@@ -136,6 +142,13 @@ func main() {
 		protected.POST("/cards/:cardId/attachments", attachmentHandler.Upload)
 		protected.GET("/cards/:cardId/attachments", attachmentHandler.GetByCardID)
 		protected.DELETE("/attachments/:id", attachmentHandler.Delete)
+
+		// 👥 Rute Anggota Board & Penugasan Kartu (RBAC - BARU!)
+		protected.POST("/boards/:boardId/members", memberHandler.Invite)
+		protected.GET("/boards/:boardId/members", memberHandler.GetMembers)
+		protected.PUT("/boards/:boardId/members/:userId", memberHandler.UpdateRole)
+		protected.DELETE("/boards/:boardId/members/:userId", memberHandler.RemoveMember)
+		protected.PUT("/cards/:cardId/assign", memberHandler.AssignCard)
 	}
 	
 

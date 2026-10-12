@@ -9,6 +9,7 @@ type Board struct {
 	Title     string    `json:"title"`
 	Color     string    `json:"color"`               // e.g. "from-blue-500 to-indigo-500"
 	Lists     []List    `json:"lists" gorm:"foreignKey:BoardID;constraint:OnDelete:CASCADE"`
+	Members   []BoardMember `json:"members" gorm:"foreignKey:BoardID;constraint:OnDelete:CASCADE"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
@@ -34,6 +35,8 @@ type Card struct {
 	CoverURL    string          `json:"coverUrl"`
 	DueDate     string          `json:"dueDate"`
 	Checked     bool            `json:"checked"`
+	AssigneeID   *uint           `json:"assigneeId"`   // <-- ID anggota yang ditugaskan (bisa nil)
+	AssigneeName string          `json:"assigneeName"`
 	Position    int             `json:"position"`            // Urutan kartu di dalam kolom
 	Checklist   []ChecklistItem `json:"checklist" gorm:"foreignKey:CardID;constraint:OnDelete:CASCADE"`
 	Comments    []Comment       `json:"comments" gorm:"foreignKey:CardID;constraint:OnDelete:CASCADE"`
@@ -83,6 +86,7 @@ type CardUsecase interface {
 	UpdateCard(id uint, content string, description string, label string, coverURL string, dueDate string, checked bool) (*Card, error)
 	MoveCard(id uint, targetListID uint, newPosition int) error
 	DeleteCard(id uint) error
+	AssignCard(cardID uint, assigneeID *uint, assigneeName string) (*Card, error)
 }
 
 // 9. Kontrak Repository List
@@ -169,4 +173,33 @@ type AttachmentUsecase interface {
 	DeleteAttachment(id uint) error
 }
 
+// 19. Model BoardMember (Anggota Tim Papan dengan Role RBAC)
+type BoardMember struct {
+	ID        uint      `json:"id" gorm:"primaryKey"`
+	BoardID   uint      `json:"boardId" gorm:"index;not null"`
+	UserID    uint      `json:"userId" gorm:"index;not null"`
+	UserName  string    `json:"userName"`
+	UserEmail string    `json:"userEmail"`
+	Role      string    `json:"role" gorm:"default:'member'"` // "admin", "member", "viewer"
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+// 20. Kontrak Repository BoardMember
+type BoardMemberRepository interface {
+	AddMember(member *BoardMember) error
+	FindByBoardAndUser(boardID uint, userID uint) (*BoardMember, error)
+	FindMembersByBoardID(boardID uint) ([]BoardMember, error)
+	UpdateRole(boardID uint, userID uint, role string) error
+	RemoveMember(boardID uint, userID uint) error
+}
+
+// 21. Kontrak Usecase BoardMember (RBAC)
+type BoardMemberUsecase interface {
+	InviteMember(boardID uint, currentUserID uint, email string, role string) (*BoardMember, error)
+	GetBoardMembers(boardID uint, currentUserID uint) ([]BoardMember, error)
+	UpdateMemberRole(boardID uint, currentUserID uint, targetUserID uint, newRole string) error
+	RemoveMember(boardID uint, currentUserID uint, targetUserID uint) error
+	GetUserRole(boardID uint, userID uint) (string, error)
+}
 
